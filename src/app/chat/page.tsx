@@ -1,18 +1,24 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { FaPaperPlane } from "react-icons/fa";
 
 interface Message {
-  role: "user" | "ai";
+  role: "user" | "assistant";
   content: string;
 }
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([{
+    role: "assistant",
+    content: "Hello, how may I help you"
+  }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Auto-scroll to latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -28,12 +34,12 @@ const ChatPage: React.FC = () => {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
       if (!res.ok) throw new Error("Failed to fetch AI response");
       const data = await res.json();
-      const aiMessage: Message = { role: "ai", content: data.reply || "(No response)" };
-      setMessages((prev) => [...prev, aiMessage]);
+      const assistantMessage: Message = { role: "assistant", content: data.reply || "(No response)" };
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (err: any) {
       setError(err.message || "Unknown error");
     } finally {
@@ -48,24 +54,28 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100">
-      <div className="w-full max-w-2xl flex flex-col rounded-2xl shadow-2xl bg-white overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-2">
+      <div className="w-full max-w-xl flex flex-col rounded-2xl shadow-2xl bg-white overflow-hidden border border-gray-200">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-6 text-xl font-semibold">
-          💬 Tradiemate AI Chat
+          Tradiemate AI Chat
         </div>
         {/* Chat History */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50" style={{ minHeight: "60vh" }}>
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+          style={{ minHeight: "60vh", maxHeight: "60vh" }}
+        >
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`px-4 py-2 rounded-2xl max-w-xs break-words shadow ${
+                className={`px-4 py-2 rounded-2xl max-w-xs sm:max-w-md break-words shadow text-base sm:text-lg ${
                   msg.role === "user"
-                    ? "bg-blue-500 text-white rounded-br-none text-xl"
-                    : "bg-white text-gray-900 border border-gray-200 rounded-bl-none text-lg"
+                    ? "bg-gray-200 text-gray-900 rounded-br-none"
+                    : "bg-blue-500 text-white rounded-bl-none"
                 }`}
               >
                 {msg.content}
@@ -74,8 +84,8 @@ const ChatPage: React.FC = () => {
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="rounded-2xl px-4 py-2 max-w-xs bg-white text-gray-400 border border-gray-200 animate-pulse">
-                AI is typing...
+              <div className="rounded-2xl px-4 py-2 max-w-xs sm:max-w-md bg-white text-gray-400 border border-gray-200 animate-pulse">
+                typing…
               </div>
             </div>
           )}
@@ -86,22 +96,24 @@ const ChatPage: React.FC = () => {
           <div className="bg-red-100 text-red-700 px-4 py-2 text-sm text-center">{error}</div>
         )}
         {/* Input Area */}
-        <div className="p-4 bg-gray-100 flex gap-2 border-t">
+        <div className="p-4 bg-gray-100 flex gap-2 border-t items-center sticky bottom-0">
           <input
             type="text"
-            className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-base sm:text-lg"
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleInputKeyDown}
             disabled={loading}
+            aria-label="Type your message"
           />
           <button
-            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-full font-semibold hover:from-blue-600 hover:to-purple-600 transition disabled:opacity-50"
+            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full font-semibold hover:from-blue-600 hover:to-purple-600 transition disabled:opacity-50 text-base sm:text-lg flex items-center gap-2"
             onClick={sendMessage}
             disabled={loading || !input.trim()}
+            aria-label="Send message"
           >
-            Send
+            <FaPaperPlane className="text-lg" />
           </button>
         </div>
       </div>
