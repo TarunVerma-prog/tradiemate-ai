@@ -1,3 +1,4 @@
+"use client";
 import { FaComments, FaPhoneAlt, FaEnvelope, FaClipboardList, FaCheckCircle, FaUserTie, FaStar, FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 import Head from "next/head";
@@ -39,6 +40,10 @@ export default function Home() {
           <p className="text-2xl sm:text-3xl text-[#f7f5ee] mb-12 max-w-2xl mx-auto font-normal">
             Get the #1 rated receptionist service for<br className="hidden sm:block" /> small businesses.
           </p>
+          <div className="mb-8">
+            <span className="text-xl sm:text-2xl text-[#f7f5ee] font-semibold">Call us now: </span>
+            <span className="text-2xl sm:text-3xl text-[#e24a0c] font-bold">+61 2 5503 5726</span>
+          </div>
           <div className="flex flex-row gap-8 justify-center mb-10">
             <button className="bg-[#e24a0c] text-white font-bold text-xl px-12 py-5 rounded-full transition-all duration-200">
               AI Receptionist
@@ -47,6 +52,12 @@ export default function Home() {
               Human Receptionists
             </button>
           </div>
+          <button
+            className="mt-4 bg-blue-600 text-white font-bold text-xl px-10 py-4 rounded-full hover:bg-blue-700 transition"
+            onClick={() => alert('Calling feature coming soon!')}
+          >
+            Call an AI Receptionist
+          </button>
           <a href="#" className="text-[#f7f5ee] text-xl underline underline-offset-2 hover:text-orange-300 transition">
             Book a demo with our team &rsaquo;
           </a>
@@ -112,7 +123,7 @@ export default function Home() {
                 <button className="mt-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-full font-bold shadow hover:from-blue-600 hover:to-purple-600 transition">
                   Try the Chat Now
                 </button>
-              </Link>
+      </Link>
             </div>
           </div>
         </section>

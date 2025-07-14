@@ -17,10 +17,12 @@ const ChatPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    inputRef.current?.focus();
   }, [messages, loading]);
 
   const sendMessage = async () => {
@@ -106,6 +108,7 @@ const ChatPage: React.FC = () => {
             onKeyDown={handleInputKeyDown}
             disabled={loading}
             aria-label="Type your message"
+            ref={inputRef}
           />
           <button
             className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full font-semibold hover:from-blue-600 hover:to-purple-600 transition disabled:opacity-50 text-base sm:text-lg flex items-center gap-2"
