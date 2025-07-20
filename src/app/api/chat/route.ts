@@ -23,18 +23,22 @@ Your task is to book an appointment by collecting the following information from
 2. Email address
 3. Phone number
 4. Address for the visit
-5. Preferred day of visit (date)
-6. Preferred time of visit
+5. Is this an emergency plumbing issue? (Yes/No)
+6. Preferred day of visit (date)
+7. Preferred time of visit
 
 Rules:
 - After each user response, immediately and politely ask for the next required field. Do NOT thank the user, do NOT use pleasantries, and do NOT repeat information already given.
+- If the user indicates this is an EMERGENCY, prioritize scheduling within the next 24 hours. Suggest today or tomorrow as the preferred date and emphasize urgency.
 - If the user provides a day of the week (e.g., 'Tuesday') instead of a date, respond with the exact upcoming date (e.g., 'Tuesday, June 18, 2024') and ask the user to confirm this date before proceeding.
 - If asking for email, validate that it is a valid email address format. If not, politely ask the user to provide a valid email address.
+- For emergency cases, suggest immediate time slots (within 2-4 hours if possible) and emphasize the urgency in your response.
 - Once all information is collected, summarize the appointment details and ask the user to confirm. Present the details in a clear bulleted list format for easy review.
 - If the user confirms, respond with a friendly confirmation message and end the conversation.
 - If the user wants to change any detail, allow them to update it before confirming.
 - Do not proceed until each required field is collected and validated.
-- Be polite, professional, and efficient throughout.`
+- Be polite, professional, and efficient throughout.
+- For emergency bookings, clearly mark them as "EMERGENCY" in the summary.`
     };
     const openaiMessages = [systemPrompt, ...messages];
 
@@ -95,7 +99,7 @@ Rules:
             from: 'TradieMate <onboarding@resend.dev>',
             to: email,
             subject: 'Your Plumbing Appointment Confirmation',
-            html: `<div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;"><h2>Booking Confirmed</h2><p>Thank you for booking with TradieMate! Here are your appointment details:</p>${formattedSummary}</div>`
+            html: `<div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;"><h2>Booking Confirmed</h2><p>Thank you for booking with TradieMate! Here are your appointment details:</p>${formattedSummary}<p style="margin-top:20px;font-size:14px;color:#666;">We'll contact you shortly to confirm your appointment time.</p></div>`
           });
           console.log('Email sent successfully');
         } catch (e) {
